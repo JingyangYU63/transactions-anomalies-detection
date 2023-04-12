@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 
-import aws_cdk as cdk
+from aws_cdk import core as cdk
 
 from ml_cdk_app.ml_cdk_app_stack import MlCdkAppStack
 
@@ -20,7 +20,7 @@ MlCdkAppStack(app, "MlCdkAppStack",
     # Uncomment the next line if you know exactly what Account and Region you
     # want to deploy the stack to. */
 
-    #env=cdk.Environment(account='123456789012', region='us-east-1'),
+    env=cdk.Environment(account='216657257678', region='us-east-2'),
 
     # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
     )
