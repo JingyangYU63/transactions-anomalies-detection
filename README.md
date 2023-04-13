@@ -16,3 +16,12 @@ som-train.py: The Python script that defines the neural network - SOM (Self-Orga
 
 inference.py: The Python script for SageMaker configuration, defining basic requirements like model loading, model saving, model prediction,
 model prediciton, model output, etc.
+
+## 2. Relevent links
+
+Github Repository: https://github.com/JingyangYU63/transactions-anomalies-detection
+
+Lambda Function API Address: https://usoi5v3cozoyu36rmracdmqpjy0gxuxu.lambda-url.us-east-2.on.aws/
+
+## 3. Model intro
+
