@@ -27,3 +27,5 @@ Before to fit in the data right into my model, I performed data preprocessing to
 I began to deploy the model after training. First, I deployed the model to a SageMaker endpoint. Then I created an AWS CDK App with a Lambda Function, served as the backend for the CDK app to perform ML inference. To retrieve my model, I configured my Lambda Function with an IAM role to grant permission to access the SageMaker endpoint where I deployed the model and an API Gateway RESTful API endpoint to provide a secure and scalable way of exposing the Lambda function to the internet. The Lambda function is triggered by API Gateway when a user makes a request to the CDK app, and it is responsible for handling the request and generating a response.
 <img width="1359" alt="image" src="https://user-images.githubusercontent.com/73151841/231852488-baa9518b-7f13-4350-a663-17d88cc3a659.png">
 
+Some test imputs on my deployed API:
+<img width="1281" alt="image" src="https://user-images.githubusercontent.com/73151841/231853808-75cdb27e-dc94-4cf3-9377-be6a97b82cb8.png">
