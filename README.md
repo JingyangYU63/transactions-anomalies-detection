@@ -28,6 +28,7 @@ I began to deploy the model after training. First, I deployed the model to a Sag
 <img width="1359" alt="image" src="https://user-images.githubusercontent.com/73151841/231852488-baa9518b-7f13-4350-a663-17d88cc3a659.png">
 
 Some test imputs on my deployed API:
+
 <img width="662" alt="image" src="https://user-images.githubusercontent.com/73151841/233172779-0d8c5337-2ccd-49f8-a7a3-f089f24e9aa8.png">
 
 <img width="1281" alt="image" src="https://user-images.githubusercontent.com/73151841/231853808-75cdb27e-dc94-4cf3-9377-be6a97b82cb8.png">
