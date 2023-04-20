@@ -36,8 +36,11 @@ class SOM(torch.nn.Module):
             for i in range(x.shape[0]):
                 xi = x[i, :]
                 min_dist, map_idx = self(xi)
-                self.weights[map_idx[0], map_idx[1], :] += self.learning_rate * (xi - self.weights[map_idx[0], map_idx[1], :])
-        
+                dist_to_winner = torch.cdist(torch.tensor([map_idx], dtype=torch.float32), \
+                                             torch.tensor([[(x, y) for x in range(self.map_dim[0])] for y in range(self.map_dim[1])], dtype=torch.float32)).squeeze()
+                lr = self.learning_rate * torch.exp(-dist_to_winner)
+                self.weights += lr.unsqueeze(-1) * (xi - self.weights)
+                
         min_dists = torch.zeros(x.shape[0], dtype=torch.float32)
         for i in range(x.shape[0]):
             xi = x[i, :]
@@ -54,6 +57,7 @@ class SOM(torch.nn.Module):
             cluster_labels[i] = map_idx[0] * self.map_dim[1] + map_idx[1]
             min_dists[i] = min_dist
         return min_dists, cluster_labels
+
     
 
 if __name__ == '__main__':
