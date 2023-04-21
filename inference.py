@@ -5,55 +5,9 @@ import os
 import logging
 import io
 import json
-
-logger = logging.getLogger(__name__)
-
-class SOM(torch.nn.Module):
-    def __init__(self, input_dim=7, map_dim=(10, 10), num_epochs=20, learning_rate=0.1):
-        super(SOM, self).__init__()
-        self.input_dim = input_dim
-        self.map_dim = map_dim
-        self.num_epochs = num_epochs
-        self.learning_rate = learning_rate
-        self.weights = torch.nn.Parameter(torch.randn(map_dim[0], map_dim[1], input_dim), requires_grad=False)
-        self.threshold = 0
-
-    def forward(self, x):
-        x = x.unsqueeze(0)
-        dist = torch.cdist(x, self.weights).squeeze(0)
-        min_dist, idx = torch.min(dist.view(-1), 0)
-        map_idx = np.array(np.unravel_index(idx.item(), self.map_dim))
-        return min_dist, map_idx
-
-    def train_(self, x):
-        for epoch in range(self.num_epochs):
-            print("Training Progress: " + str(round(100 * epoch / self.num_epochs, 2)) + "%")
-            for i in range(x.shape[0]):
-                xi = x[i, :]
-                min_dist, map_idx = self(xi)
-                dist_to_winner = torch.cdist(torch.tensor([map_idx], dtype=torch.float32), \
-                                             torch.tensor([[(x, y) for x in range(self.map_dim[0])] for y in range(self.map_dim[1])], dtype=torch.float32)).squeeze()
-                lr = self.learning_rate * torch.exp(-dist_to_winner)
-                self.weights += lr.unsqueeze(-1) * (xi - self.weights)
-                
-        min_dists = torch.zeros(x.shape[0], dtype=torch.float32)
-        for i in range(x.shape[0]):
-            xi = x[i, :]
-            min_dist, map_idx = self(xi)
-            min_dists[i] = min_dist
-        self.threshold = torch.quantile(input=min_dists, q=0.95)
-
-    def get_quantization_error(self, x):
-        cluster_labels = torch.zeros(x.shape[0], dtype=torch.int32)
-        min_dists = torch.zeros(x.shape[0], dtype=torch.float32)
-        for i in range(x.shape[0]):
-            xi = x[i, :]
-            min_dist, map_idx = self(xi)
-            cluster_labels[i] = map_idx[0] * self.map_dim[1] + map_idx[1]
-            min_dists[i] = min_dist
-        return min_dists, cluster_labels
-
-
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from som-train import SOM
 
 logger = logging.getLogger(__name__)
 

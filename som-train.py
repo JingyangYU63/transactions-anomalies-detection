@@ -12,6 +12,8 @@ import os
 import boto3
 import csv
 import io
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
 
 class SOM(torch.nn.Module):
     def __init__(self, input_dim=7, map_dim=(10, 10), num_epochs=20, learning_rate=0.1):
@@ -30,17 +32,34 @@ class SOM(torch.nn.Module):
         map_idx = np.array(np.unravel_index(idx.item(), self.map_dim))
         return min_dist, map_idx
 
+    def visualize(self):
+        # Get the neuron weights and downcast to 2D using PCA
+        pca = PCA(n_components=2)
+        weights_2d = pca.fit_transform(self.weights.view(-1, self.input_dim).detach().numpy())
+
+        # create new figure and axis object
+        fig, ax = plt.subplots()
+
+        # plot the neuron weights as a scatter plot
+        ax.scatter(weights_2d[:, 0], weights_2d[:, 1], c='b')
+
+        # display the plot
+        plt.show()
+
+        # clear the axis object for the next iteration
+        ax.clear()
+    
     def train_(self, x):
+        fig, ax = plt.subplots()
+        ims = []
         for epoch in range(self.num_epochs):
             print("Training Progress: " + str(round(100 * epoch / self.num_epochs, 2)) + "%")
             for i in range(x.shape[0]):
                 xi = x[i, :]
                 min_dist, map_idx = self(xi)
-                dist_to_winner = torch.cdist(torch.tensor([map_idx], dtype=torch.float32), \
-                                             torch.tensor([[(x, y) for x in range(self.map_dim[0])] for y in range(self.map_dim[1])], dtype=torch.float32)).squeeze()
-                lr = self.learning_rate * torch.exp(-dist_to_winner)
-                self.weights += lr.unsqueeze(-1) * (xi - self.weights)
-                
+                self.weights[map_idx[0], map_idx[1], :] += self.learning_rate * (xi - self.weights[map_idx[0], map_idx[1], :])
+            self.visualize()
+
         min_dists = torch.zeros(x.shape[0], dtype=torch.float32)
         for i in range(x.shape[0]):
             xi = x[i, :]
