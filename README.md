@@ -28,6 +28,14 @@ Before to fit in the data right into my model, I performed data preprocessing to
 
 Before to fit in the data right into my model, I performed data preprocessing to read in the json file and fill in the NaN values. Then I computed aggregated statistics based on user's account info as feature engineering to generate useful features and transform the data into a form that the model can consume after standardization (this is crucial in distance-based custering algorithms). Then I did some EDA and visualization using basic ML clustering algorithms like KNN, DBSCAN, etc. After that, I started constructing my main model - SOM (Self-Organizing Map) in PyTorch. Since this algorithm updates weights once per input datapoint, I passed the data directly into the model instead of using data loaders. When the model is fully trained, I picked the data records that have a large distance to the cluster center above a center threshold (e.g., 95% quantile for the total distances) as the anomalies.
 
+Cluster centers pre-training
+
+<img width="545" alt="image" src="https://user-images.githubusercontent.com/73151841/233545422-d4a8e12f-58df-406b-bd10-fe621b938c21.png">
+
+Cluster centers after training
+
+<img width="553" alt="image" src="https://user-images.githubusercontent.com/73151841/233545473-f1f8728d-3d87-484f-a025-288c989b0e1b.png">
+
 I began to deploy the model after training. First, I deployed the model to a SageMaker endpoint. Then I created an AWS CDK App with a Lambda Function, served as the backend for the CDK app to perform ML inference. To retrieve my model, I configured my Lambda Function with an IAM role to grant permission to access the SageMaker endpoint where I deployed the model and an API Gateway RESTful API endpoint to provide a secure and scalable way of exposing the Lambda function to the internet. The Lambda function is triggered by API Gateway when a user makes a request to the CDK app, and it is responsible for handling the request and generating a response.
 <img width="1359" alt="image" src="https://user-images.githubusercontent.com/73151841/231852488-baa9518b-7f13-4350-a663-17d88cc3a659.png">
 
